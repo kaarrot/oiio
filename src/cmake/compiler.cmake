@@ -24,12 +24,12 @@ message (VERBOSE "CMAKE_CXX_COMPILE_FEATURES = ${CMAKE_CXX_COMPILE_FEATURES}")
 
 
 ###########################################################################
-# The proj_add_compile_definitions, proj_add_compile_options, and
-# proj_add_link_options are like the global add_compile_definitions (etc), but
-# they merely add to ${PROJECT_NAME}_blah lists, which are expected to be
-# added to library and executable targets in our project. The point is that
-# we really shouldn't be polluting the global definitions, in case our
-# cmake files are included in an "outer" project.
+# The proj_add_compile_definitions, proj_add_compile_options,
+# proj_include_directories, proj_add_link_options are like the global
+# add_compile_definitions (etc), but they merely add to ${PROJECT_NAME}_blah
+# lists, which are expected to be added to library and executable targets in
+# our project. The point is that we really shouldn't be polluting the global
+# definitions, in case our cmake files are included in an "outer" project.
 #
 macro (proj_add_compile_definitions)
     list (APPEND ${PROJECT_NAME}_compile_definitions ${ARGN})
@@ -37,6 +37,14 @@ endmacro ()
 
 macro (proj_add_compile_options)
     list (APPEND ${PROJECT_NAME}_compile_options ${ARGN})
+endmacro ()
+
+macro (proj_include_directories)
+    list (APPEND ${PROJECT_NAME}_include_directories ${ARGN})
+endmacro ()
+
+macro (proj_include_directories_prepend)
+    list (PREPEND ${PROJECT_NAME}_include_directories ${ARGN})
 endmacro ()
 
 macro (proj_add_link_options)
@@ -320,14 +328,14 @@ endif ()
 # the proper compiler directives added to generate code for those ISA
 # capabilities.
 #
-set (USE_SIMD "" CACHE STRING "Use SIMD directives (0, sse2, sse3, ssse3, sse4.1, sse4.2, avx, avx2, avx512f, f16c, aes)")
+set_cache (USE_SIMD "" "Use SIMD directives (0, sse2, sse3, ssse3, sse4.1, sse4.2, avx, avx2, avx512f, f16c, aes)")
 set (SIMD_COMPILE_FLAGS "")
 message (STATUS "Compiling with SIMD level ${USE_SIMD}")
 if (NOT USE_SIMD STREQUAL "")
     if (USE_SIMD STREQUAL "0")
         set (SIMD_COMPILE_FLAGS ${SIMD_COMPILE_FLAGS} "-DOIIO_NO_SIMD=1")
     else ()
-        string (REPLACE "," ";" SIMD_FEATURE_LIST ${USE_SIMD})
+        string (REPLACE "," ";" SIMD_FEATURE_LIST "${USE_SIMD}")
         foreach (feature ${SIMD_FEATURE_LIST})
             message (VERBOSE "SIMD feature: ${feature}")
             if (MSVC OR CMAKE_COMPILER_IS_INTEL)
