@@ -3,6 +3,47 @@
 # https://github.com/AcademySoftwareFoundation/OpenImageIO
 
 
+# Set a variable to a value if it is not already defined.
+macro (set_if_not var value)
+    if (NOT DEFINED ${var})
+        set (${var} ${value})
+    endif ()
+endmacro ()
+
+
+# Set a cmake variable `var` from an environment variable, if it is not
+# already defined (or if the FORCE flag is used). By default, the env var is
+# the same name as `var`, but you can specify a different env var name with
+# the ENVVAR keyword. If the env var doesn't exist or is empty, and a DEFAULT
+# is supplied, assign the default to the variable instead.  If the VERBOSE
+# CMake variable is set, or if the VERBOSE flag to this function is used,
+# print a message.
+macro (set_from_env var)
+    cmake_parse_arguments(_sfe   # prefix
+        # noValueKeywords:
+        "VERBOSE;FORCE"
+        # singleValueKeywords:
+        "ENVVAR;DEFAULT"
+        # multiValueKeywords:
+        ""
+        # argsToParse:
+        ${ARGN})
+    if (NOT DEFINED ${var} OR _sfe_FORCE)
+        set_if_not (_sfe_ENVVAR ${var})
+        if (DEFINED ENV{${_sfe_ENVVAR}} AND NOT "$ENV{${_sfe_ENVVAR}}" STREQUAL "")
+            set (${var} $ENV{${_sfe_ENVVAR}})
+            if (_sfe_VERBOSE OR VERBOSE)
+                message (VERBOSE "set ${var} = $ENV{${_sfe_ENVVAR}} (from env)")
+            endif ()
+        elseif (DEFINED _sfe_DEFAULT)
+            set (${var} ${_sfe_DEFAULT})
+            message (VERBOSE "set ${var} = $ENV{${_sfe_DEFAULT}}")
+        endif ()
+    endif ()
+endmacro ()
+
+
+
 # Wrapper for CMake `set()` functionality with extensions:
 # - If an env variable of the same name exists, it overrides the default
 #   value.
@@ -38,16 +79,15 @@ macro (super_set name value)
     if (_sce_FORCE)
         list (APPEND _sce_extra_args FORCE)
     endif ()
-    if (NOT _sce_DOC)
-        set (_sce_DOC "empty")
-    endif ()
-    if (DEFINED ENV{${name}} AND NOT "$ENV{${name}}" STREQUAL "")
-        set (_sce_val $ENV{${name}})
-        message (VERBOSE "set ${ColorBoldWhite}Option${ColorReset} ${name} = ${_sce_val} (from env)")
-    else ()
-        set (_sce_val ${value})
-        message (VERBOSE "set ${ColorBoldWhite}Option${ColorReset} ${name} = ${_sce_val}")
-    endif ()
+    set_if_not (_sce_DOC "empty")
+    set_from_env (_sce_val ENVVAR ${name} DEFAULT ${value})
+    # if (DEFINED ENV{${name}} AND NOT "$ENV{${name}}" STREQUAL "")
+    #     set (_sce_val $ENV{${name}})
+    #     message (VERBOSE "set ${ColorBoldWhite}Option${ColorReset} ${name} = ${_sce_val} (from env)")
+    # else ()
+    #     set (_sce_val ${value})
+    #     message (VERBOSE "set ${ColorBoldWhite}Option${ColorReset} ${name} = ${_sce_val}")
+    # endif ()
     if (_sce_CACHE)
         message (STATUS "set (${name} ${_sce_val} CACHE ${_sce_type} ${_sce_DOC} ${_sce_extra_args})")
         set (${name} ${_sce_val} CACHE ${_sce_type} ${_sce_DOC} ${_sce_extra_args})
