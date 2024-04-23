@@ -46,7 +46,7 @@ list (APPEND CMAKE_MODULE_PATH
       "${PROJECT_SOURCE_DIR}/src/cmake/modules"
       "${PROJECT_SOURCE_DIR}/src/cmake")
 include (colors)
-include (option_utils)
+include (set_utils)
 include (check_is_enabled)
 include (dependency_utils)
 include (fancy_add_executable)
