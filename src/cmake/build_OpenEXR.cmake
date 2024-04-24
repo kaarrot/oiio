@@ -12,6 +12,8 @@ build_dependency_with_cmake(OpenEXR
     GIT_REPOSITORY  ${OpenEXR_GIT_REPOSITORY}
     GIT_TAG         ${OpenEXR_GIT_TAG}
     CMAKE_ARGS
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        # Build static libs
         -D BUILD_SHARED_LIBS=OFF
         -D OPENEXR_FORCE_INTERNAL_DEFLATE=ON
         # Don't built unnecessary parts of OpenEXR

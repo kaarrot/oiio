@@ -18,6 +18,7 @@ build_dependency_with_cmake(OpenColorIO
         # We would prefer to build a static OCIO, but haven't figured out how
         # to make it all work with the static dependencies, it just makes
         # things complicated downstream.
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -D BUILD_SHARED_LIBS=ON
         -D CMAKE_INSTALL_LIBDIR=lib
         # Don't built unnecessary parts of OCIO
@@ -44,5 +45,6 @@ set (OpenColorIO_DIR ${OpenColorIO_LOCAL_INSTALL_DIR})
 set (OpenColorIO_REFIND TRUE)
 
 # We need to include the OpenColorIO dynamic libraries in our own install.
-file (GLOB _ocio_lib_files "${OpenColorIO_LOCAL_INSTALL_DIR}/lib/*OpenColorIO*")
+file (GLOB _ocio_lib_files "${OpenColorIO_LOCAL_INSTALL_DIR}/lib/*OpenColorIO*"
+                           "${OpenColorIO_LOCAL_INSTALL_DIR}/lib/${CMAKE_BUILD_TYPE}/*OpenColorIO*")
 install (FILES ${_ocio_lib_files} TYPE LIB)
