@@ -543,7 +543,9 @@ jobs:
         run: src/build-scripts/gh-win-installdeps.bash
       - name: Build
         shell: bash
-        run: src/build-scripts/ci-build.bash
+        run: |
+          src/build-scripts/ci-build.bash
+          ls -R build/deps
       - name: Testsuite
         shell: bash
         run: src/build-scripts/ci-test.bash
