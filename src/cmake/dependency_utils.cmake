@@ -325,6 +325,7 @@ macro (build_dependency_with_cmake pkgname)
 
     # Clone the repo if we don't already have it
     find_package (Git REQUIRED)
+
     if (NOT IS_DIRECTORY ${${pkgname}_LOCAL_SOURCE_DIR})
         execute_process(COMMAND ${GIT_EXECUTABLE} clone ${_pkg_GIT_REPOSITORY}
                                 -b ${_pkg_GIT_TAG} --depth 1
@@ -361,6 +362,7 @@ macro (build_dependency_with_cmake pkgname)
     # Build the package
     execute_process (COMMAND ${CMAKE_COMMAND}
                         --build ${${pkgname}_LOCAL_BUILD_DIR}
+                        --config ${CMAKE_BUILD_TYPE}
                      ${pkg_quiet}
                     )
 
@@ -368,6 +370,7 @@ macro (build_dependency_with_cmake pkgname)
     if (NOT _pkg_NOINSTALL)
         execute_process (COMMAND ${CMAKE_COMMAND}
                             --build ${${pkgname}_LOCAL_BUILD_DIR}
+                            --config ${CMAKE_BUILD_TYPE}
                             --target install
                          ${pkg_quiet}
                         )

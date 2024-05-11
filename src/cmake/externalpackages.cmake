@@ -44,7 +44,8 @@ include (FindThreads)
 # Dependencies for required formats and features. These are so critical
 # that we will not complete the build if they are not found.
 
-checked_find_package (ZLIB REQUIRED)  # Needed by several packages
+checked_find_package (ZLIB REQUIRED BUILD_LOCAL missing)  # Needed by several packages
+message(STATUS RRRRRRRRR)
 checked_find_package (TIFF REQUIRED
                       VERSION_MIN 3.9
                       RECOMMEND_MIN 4.0
@@ -70,7 +71,7 @@ checked_find_package (OpenEXR REQUIRED
 # install version of 2.x.
 include_directories(BEFORE ${IMATH_INCLUDES} ${OPENEXR_INCLUDES})
 if (MSVC AND NOT LINKSTATIC)
-    proj_add_compile_definitions (OPENEXR_DLL) # Is this needed for new versions?
+    # proj_add_compile_definitions (OPENEXR_DLL) # Is this needed for new versions?
 endif ()
 set (OIIO_USING_IMATH 3)
 set (OPENIMAGEIO_IMATH_TARGETS
