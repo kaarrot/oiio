@@ -79,8 +79,10 @@ macro (setup_python_module)
 #    add_library (${target_name} MODULE ${lib_SOURCES})
 #
     # Declare the libraries it should link against
+    # On termux python libray is not registered
+    message(status "Python libraries to link: " ${lib_LIBS})
     target_link_libraries (${target_name}
-                           PRIVATE ${lib_LIBS})
+                           PRIVATE ${lib_LIBS} python3.11)
 
     set (_module_LINK_FLAGS "${VISIBILITY_MAP_COMMAND} ${EXTRA_DSO_LINK_ARGS}")
     if (UNIX AND NOT APPLE)
