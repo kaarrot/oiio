@@ -40,7 +40,7 @@ if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL "1.6.44")
 endif ()
 
 set (PNG_REFIND_ARGS ${_refind_config}
-                     CMAKE_FIND_ROOT_PATH ${PNG_LOCAL_INSTALL_DIR}
+                     HINTS ${PNG_LOCAL_INSTALL_DIR}
     )
 
 if (PNG_BUILD_SHARED_LIBS)
