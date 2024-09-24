@@ -34,10 +34,14 @@ set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR})
 # Signal to caller that we need to find again at the installed location
 set (PNG_REFIND TRUE)
 set (PNG_REFIND_VERSION ${PNG_BUILD_VERSION})
+set (_refind_config "")
 if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL "1.6.44")
-    # CMake configs added in libpng 1.6.44
-    set (PNG_REFIND_ARGS CONFIG)  
+    set (_refind_config CONFIG)
 endif ()
+
+set (PNG_REFIND_ARGS ${_refind_config}
+                     CMAKE_FIND_ROOT_PATH ${PNG_LOCAL_INSTALL_DIR}
+    )
 
 if (PNG_BUILD_SHARED_LIBS)
     install_local_dependency_libs (PNG PNG)
