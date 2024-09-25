@@ -30,20 +30,22 @@ build_dependency_with_cmake(PNG
 
 # Set some things up that we'll need for a subsequent find_package to work
 set (PNG_ROOT ${PNG_LOCAL_INSTALL_DIR})
-set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR})
+set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
 
 # Signal to caller that we need to find again at the installed location
 set (PNG_REFIND TRUE)
-set (PNG_REFIND_VERSION ${PNG_BUILD_VERSION})
-
-# If building PNG >= 1.6.44, refind with PNG's CMake Config
-if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL 1.6.44)
-    message (STATUS "PNG ${PNG_BUILD_VERSION} >= 1.6.44, refinding with CMake Config")
+if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL 1.6.45)
+    message (STATUS "PNG ${PNG_BUILD_VERSION} >= 1.6.45, refinding with PNG Config")
     set(_refind_config REQUIRED CONFIG)
 endif ()
+
 set(PNG_REFIND_ARGS ${_refind_config}
-                    HINTS ${PNG_LOCAL_INSTALL_DIR}/lib/libpng
+                    NO_DEFAULT_PATH
 )
+
+# Signal to caller that we need to find again at the installed location
+set (PNG_REFIND TRUE)
+set (PNG_REFIND_ARGS NO_DEFAULT_PATH)
 
 if (PNG_BUILD_SHARED_LIBS)
     install_local_dependency_libs (PNG PNG)
