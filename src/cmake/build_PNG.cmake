@@ -13,6 +13,10 @@ set (PNG_GIT_TAG "v${PNG_BUILD_VERSION}")
 set_cache (PNG_BUILD_SHARED_LIBS ${LOCAL_BUILD_SHARED_LIBS_DEFAULT}
            DOC "Should execute a local PNG build, if necessary, build shared libraries" ADVANCED)
 
+unset(PNG_VERSION)
+unset(PNG_INCLUDE_DIR)
+unset(PNG_INCLUDE_DIRS)
+unset(PNG_LIBRARY)
 string (MAKE_C_IDENTIFIER ${PNG_BUILD_VERSION} PNG_VERSION_IDENT)
 
 build_dependency_with_cmake(PNG
