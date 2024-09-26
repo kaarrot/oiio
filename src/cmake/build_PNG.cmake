@@ -13,10 +13,6 @@ set (PNG_GIT_TAG "v${PNG_BUILD_VERSION}")
 set_cache (PNG_BUILD_SHARED_LIBS ${LOCAL_BUILD_SHARED_LIBS_DEFAULT}
            DOC "Should execute a local PNG build, if necessary, build shared libraries" ADVANCED)
 
-unset(PNG_VERSION)
-unset(PNG_INCLUDE_DIR)
-unset(PNG_INCLUDE_DIRS)
-unset(PNG_LIBRARY)
 string (MAKE_C_IDENTIFIER ${PNG_BUILD_VERSION} PNG_VERSION_IDENT)
 
 build_dependency_with_cmake(PNG
@@ -25,6 +21,7 @@ build_dependency_with_cmake(PNG
     GIT_TAG         ${PNG_GIT_TAG}
     CMAKE_ARGS
         -D PNG_SHARED=${PNG_BUILD_SHARED_LIBS}
+        -D PNG_STATIC=ON
         -D PNG_EXECUTABLES=OFF
         -D PNG_TESTS=OFF
         -D PNG_FRAMEWORK=OFF
@@ -32,43 +29,14 @@ build_dependency_with_cmake(PNG
         -D CMAKE_INSTALL_LIBDIR=lib
     )
 
-
-# Set PKG_CONFIG_PATH to include the directory with the .pc files
-set(ENV{PKG_CONFIG_PATH} "${PNG_LOCAL_INSTALL_DIR}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
-
-# Include PkgConfig module
-find_package(PkgConfig REQUIRED)
-
-# Check for libpng using pkg-config
-pkg_check_modules(PNG REQUIRED libpng16)
-
-# Optionally, set variables to signal that PNG was found
-set(PNG_FOUND TRUE)
-set(PNG_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
-set(PNG_LIBRARIES ${PNG_LIBRARIES})
-
-
-# Set some things up that we'll need for a subsequent find_package to work
 set (PNG_ROOT ${PNG_LOCAL_INSTALL_DIR})
-
-
-# set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
+set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
 
 # # Signal to caller that we need to find again at the installed location
-# set (PNG_REFIND TRUE)
-# if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL 1.6.44)
-#     message (STATUS "PNG ${PNG_BUILD_VERSION} >= 1.6.44, refinding with PNG Config")
-#     set(_refind_config REQUIRED CONFIG)
-# endif ()
-
-# set(PNG_REFIND_ARGS ${_refind_config}
-#                     NO_DEFAULT_PATH
-# )
-
-# # Signal to caller that we need to find again at the installed location
-# set (PNG_REFIND TRUE)
-# set (PNG_REFIND_ARGS NO_DEFAULT_PATH)
+set (PNG_REFIND TRUE)
+set (PNG_REFIND_VERSION ${PNG_BUILD_VERSION})
+set (PNG_REFIND_ARGS NO_DEFAULT_PATH)
 
 if (PNG_BUILD_SHARED_LIBS)
-    install_local_dependency_libs (PNG PNG)
+    install_local_dependency_libs (PNG png16)
 endif ()
