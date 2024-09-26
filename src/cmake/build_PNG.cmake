@@ -32,24 +32,42 @@ build_dependency_with_cmake(PNG
         -D CMAKE_INSTALL_LIBDIR=lib
     )
 
+
+# Set PKG_CONFIG_PATH to include the directory with the .pc files
+set(ENV{PKG_CONFIG_PATH} "${PNG_LOCAL_INSTALL_DIR}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+
+# Include PkgConfig module
+find_package(PkgConfig REQUIRED)
+
+# Check for libpng using pkg-config
+pkg_check_modules(PNG REQUIRED libpng16)
+
+# Optionally, set variables to signal that PNG was found
+set(PNG_FOUND TRUE)
+set(PNG_INCLUDE_DIRS ${PNG_INCLUDE_DIRS})
+set(PNG_LIBRARIES ${PNG_LIBRARIES})
+
+
 # Set some things up that we'll need for a subsequent find_package to work
 set (PNG_ROOT ${PNG_LOCAL_INSTALL_DIR})
-set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
 
-# Signal to caller that we need to find again at the installed location
-set (PNG_REFIND TRUE)
-if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL 1.6.45)
-    message (STATUS "PNG ${PNG_BUILD_VERSION} >= 1.6.45, refinding with PNG Config")
-    set(_refind_config REQUIRED CONFIG)
-endif ()
 
-set(PNG_REFIND_ARGS ${_refind_config}
-                    NO_DEFAULT_PATH
-)
+# set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
 
-# Signal to caller that we need to find again at the installed location
-set (PNG_REFIND TRUE)
-set (PNG_REFIND_ARGS NO_DEFAULT_PATH)
+# # Signal to caller that we need to find again at the installed location
+# set (PNG_REFIND TRUE)
+# if (${PNG_BUILD_VERSION} VERSION_GREATER_EQUAL 1.6.44)
+#     message (STATUS "PNG ${PNG_BUILD_VERSION} >= 1.6.44, refinding with PNG Config")
+#     set(_refind_config REQUIRED CONFIG)
+# endif ()
+
+# set(PNG_REFIND_ARGS ${_refind_config}
+#                     NO_DEFAULT_PATH
+# )
+
+# # Signal to caller that we need to find again at the installed location
+# set (PNG_REFIND TRUE)
+# set (PNG_REFIND_ARGS NO_DEFAULT_PATH)
 
 if (PNG_BUILD_SHARED_LIBS)
     install_local_dependency_libs (PNG PNG)
