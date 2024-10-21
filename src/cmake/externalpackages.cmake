@@ -121,6 +121,14 @@ endif ()
 
 checked_find_package (PNG VERSION_MIN 1.6.0)
 
+if (LOCAL_BUILD_SHARED_LIBS_DEFAULT)
+    set(PNG_LIBRARIES PNG::PNG)
+elseif(OpenImageIO_BUILD_MISSING_DEPS)
+    set(PNG_LIBRARIES PNG::png_static)
+else()
+    set(PNG_LIBRARIES PNG::PNG)
+endif()
+
 checked_find_package (BZip2)   # Used by ffmpeg and freetype
 if (NOT BZIP2_FOUND)
     set (BZIP2_LIBRARIES "")  # TODO: why does it break without this?
