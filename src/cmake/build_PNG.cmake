@@ -29,16 +29,10 @@ build_dependency_with_cmake(PNG
         -D CMAKE_INSTALL_LIBDIR=lib
     )
 
+set (PNG_REFIND TRUE)
+set (PNG_REFIND_ARGS CONFIG)
+set (PNG_REFIND_VERSION ${PNG_BUILD_VERSION})
 
-if (PNG_BUILD_VERSION VERSION_LESS 1.6.44)
-    set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/libpng/libpng16)
-else ()
-    set (PNG_DIR ${PNG_LOCAL_INSTALL_DIR}/lib/cmake/PNG)
-endif ()
-
-find_package(PNG ${PNG_BUILD_VERSION} REQUIRED
-             PATHS "${PNG_LOCAL_INSTALL_DIR}" "${PNG_DIR}"
-             NO_DEFAULT_PATH)
 
 if (PNG_BUILD_SHARED_LIBS)
     install_local_dependency_libs (PNG png16)
