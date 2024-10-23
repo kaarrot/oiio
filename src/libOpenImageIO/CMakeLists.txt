@@ -155,6 +155,7 @@ target_link_libraries (OpenImageIO
             ${OPENIMAGEIO_IMATH_TARGETS}
         PRIVATE
             ${OPENIMAGEIO_OPENEXR_TARGETS}
+            $<TARGET_NAME_IF_EXISTS:${PNG_LIBRARIES}> # Before plugins for static library to be picked up
             ${format_plugin_libs} # Add all the target link libraries from the plugins
             OpenColorIO::OpenColorIO
             $<TARGET_NAME_IF_EXISTS:OpenColorIO::OpenColorIOHeaders>
@@ -162,7 +163,6 @@ target_link_libraries (OpenImageIO
             $<TARGET_NAME_IF_EXISTS:TBB::tbb>
             $<TARGET_NAME_IF_EXISTS:Freetype::Freetype>
             ${BZIP2_LIBRARIES}
-            $<TARGET_NAME_IF_EXISTS:${PNG_LIBRARIES}>
             ZLIB::ZLIB
             ${CMAKE_DL_LIBS}
         )
